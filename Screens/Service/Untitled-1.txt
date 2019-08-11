@@ -1,0 +1,30 @@
+series=[];
+perfdata="'used'=515141632B;0:3178751590;0:3576095539;0;3973439488 'buffer'=204521472B;;;0; 'cached'=584175616B;;;0; 'shared'=9220096B;;;0;";
+s=perfdata.split(' ');
+s.forEach(function(elet){
+    d=elet.split('=');
+    serie={
+        'name':d[0],
+        'data':d[1].split(';')
+    };
+    j=serie.data.length;
+    for(i=0;i<j;i++){
+        v=parseFloat(serie.data[i]);
+       serie.data[i] =isNaN(v)?0:v;
+    }
+    series.push(serie);
+});
+console.log(series)
+
+//output
+
+[
+{"name":"'buffer'","data":["515141632B","0:3178751590","0:3576095539","0","3973439488"]},
+{"name":"'cached'","data":["204521472B","","","0",""]},
+{"name":"'shared'","data":["584175616B","","","0",""]},
+{"name":"'shared'","data":["9220096B","","","0",""]}
+]
+
+> Array [
+    { name: "'buffer'", data: Array ["515141632B", "0:3178751590", "0:3576095539", "0", "3973439488"] }, Object { name: "'cached'", data: Array ["204521472B", "", "", "0", ""] }, Object { name: "'shared'", data: Array ["584175616B", "", "", "0", ""] }, Object { name: "'shared'", data: Array ["9220096B", "", "", "0", ""] }
+]
