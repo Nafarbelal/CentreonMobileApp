@@ -3,8 +3,6 @@ import React, {Component} from 'react';
 import {StatusBar,View, Text, StyleSheet, Platform} from 'react-native';
 
 
-console.log('hjeight is :'+StatusBar.currentHeight)
-
 class StatusBarBackground extends Component{
   render(){
     return(

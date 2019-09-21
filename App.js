@@ -1,12 +1,8 @@
 import { createSwitchNavigator,createStackNavigator,createAppContainer } from "react-navigation";
-import {AsyncStorage} from 'react-native'
 import AuthStackNavigator from './navigation/AuthStackNavigator';
 import TabNavigator from './navigation/MainTabNavigator';
 import AuthLoadingScreen from './Screens/AuthLoadingScreen';
 import moment from 'moment';
-import {
-	Alert
-} from 'react-native';
 
 global.Token=''
 

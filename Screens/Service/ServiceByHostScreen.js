@@ -1,9 +1,6 @@
-
 import React, { Component } from "react";
 import { View,TouchableOpacity,ActivityIndicator, Text,TouchableHighlight, Image,ScrollView ,StyleSheet,Picker,AsyncStorage} from "react-native";
 import {Icon,Header} from "react-native-elements"
-import { centreon_api_key } from 'react-native-dotenv'
-import MyHeader from '../components/MyHeader'
 import Menu from "../components/Menu";
 
 class ServiceByHostScreen extends Component {
@@ -27,7 +24,6 @@ class ServiceByHostScreen extends Component {
 
         this.makeRemoteRequest();
       });
-      console.log("hosts screen mounted");
     })
   }
 
@@ -38,7 +34,6 @@ class ServiceByHostScreen extends Component {
 
   makeRemoteRequest = function(){
       that=this;
-      console.log("api :"+this.state.centreon_api);
     return fetch(this.state.centreon_api+'/centreon/api/index.php?object=centreon_realtime_hosts&action=list&limit=500', {
             method: 'GET',
             headers: {
@@ -65,7 +60,6 @@ class ServiceByHostScreen extends Component {
     }
   render() {
     const { navigate } = this.props.navigation;
-    console.log("stat=======================================================\n"+this.state.data)
     return (
       <View style={{ flex: 1, alignItems: "stretch", justifyContent: "center" ,backgroundColor:"#212121"}}>
         <Header
@@ -107,7 +101,7 @@ class ServiceByHostScreen extends Component {
               : 
                 Object.keys(this.state.data).map((key, i) => (
                 <TouchableOpacity onPress={() => navigate('Service',{HostName:this.state.data[key].name})} key={key} style={{margin:5,borderRadius:10,backgroundColor:this.getColor(this.state.data[key].state),padding:10,flexDirection:"row",alignItems:'center'}}>
-                  <View onPress={()=>{console.log("it works")}} style={{width:300}}>
+                  <View style={{width:300}}>
                       <Text style={{fontWeight:"bold",fontSize:20}}>{ this.state.data[key].name }</Text>
                       <Text>{ this.getStatus(this.state.data[key].state) }</Text>
                       <Text>{ this.state.data[key].output }</Text>

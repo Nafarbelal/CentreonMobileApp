@@ -27,7 +27,6 @@ class HomeScreen extends Component {
       refreshing: false,
       centreon_api:'',
     };
-    console.log("api is :"+this.state.centreon_api)
     this.makeRemoteRequest=this.makeRemoteRequest.bind(this);
   }
 
@@ -38,7 +37,6 @@ class HomeScreen extends Component {
       that.setState({centreon_api:value});
       this.makeRemoteRequest();
     });
-    console.log("hosts screen mounted");
     })
   }
 
@@ -49,8 +47,6 @@ class HomeScreen extends Component {
 
   makeRemoteRequest = function  (){
       that=this;  
-//fetch hosts
-console.log("api :"+this.state.centreon_api); 
 fetch(this.state.centreon_api+'/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all&order=desc&fields=id,host_id,state&limit=500', {
           method: 'GET',
           headers: {
@@ -82,11 +78,7 @@ fetch(this.state.centreon_api+'/centreon/api/index.php?action=list&object=centre
                           hosts.pending++;
                           break;
                   }
-      //            console.log(JSON.stringify(r)+"\n\n\n");
               });
-              //console.log('from getdata :');
-              //console.log(this.data);
-              //that.setState({ data: res });
               
               that.setState({ hosts: hosts,loading:false }); 
           })
@@ -123,11 +115,7 @@ fetch(this.state.centreon_api+'/centreon/api/index.php?action=list&object=centre
                           services.unknown++;
                           break;
                     }
-        //            console.log(JSON.stringify(r)+"\n\n\n");
                 });
-                //console.log('from getdata :');
-                //console.log(this.data);
-                //that.setState({ data: res });
                 
                 that.setState({ services: services }); 
             })

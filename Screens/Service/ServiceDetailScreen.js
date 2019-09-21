@@ -27,13 +27,9 @@ class ServiceDetailScreen extends Component {
     //=================
     this.setState({_isMounted:true});
     const serviceDesc = this.props.navigation.getParam('ServiceName', 'undefined');  
-    console.log("serives desc"+serviceDesc);
-    console.log("heeeeeeeeeeeeeeeeeeeeeere is the props"+serviceDesc);
     AsyncStorage.getItem('centreon_api').then((value)=>{
       if(that.state._isMounted)
         that.setState({centreon_api:value});
-        console.log("centreon_api :"+that.state.centreon_api);
-       
         this.makeRemoteRequest(serviceDesc);
       });
     //============
@@ -65,7 +61,6 @@ class ServiceDetailScreen extends Component {
         i++;
         series.push(serie);
       });
-      console.log(series);
       return series;
   }
 
@@ -80,18 +75,9 @@ class ServiceDetailScreen extends Component {
         }).then(res => res.json())
             .then(function (res) {
               i=0;
-              console.log(res);
               res = res.filter(function(value, index, res){
-                console.log("vlue :"+value)
                 return value.description===serviceDesc;
               });
-               /* res.forEach(function (r) {
-                    if(r.description!==serviceDesc) 
-                });*/
-
-                //console.log('from getdata :');
-                //console.log(this.data);
-                //var s=
                 startDate=parseInt(res[0].last_check);
                 res[0].last_check=moment.unix(parseInt(res[0].last_check)).format('LLLL');
                 res[0].last_state_change=moment.unix(parseInt(res[0].last_state_change)).format('LLLL');
@@ -99,7 +85,6 @@ class ServiceDetailScreen extends Component {
                 color=that.getColor(res[0].state);
                 res[0].state=that.getStat(res[0].state);
                 res[0].criticality=res[0].critically?"Oui":"NON";
-                console.log(res[0].perfdata);
                 chartData=res[0].perfdata===""?"":that.DataReWrite(res[0].perfdata);
                 that.setState({ data: res[0],color:color ,startDate:startDate,chartData:chartData,loading:false});
             })
@@ -120,13 +105,7 @@ class ServiceDetailScreen extends Component {
   }
     
   render() {
-    /*if(this.state.loading===false){
-      return(
-      <View style={[styles.container, styles.horizontal]}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-      );
-    }*/
+    
     //highcharts config
     var Highcharts='Highcharts';
     var conf={
@@ -197,7 +176,6 @@ const options = {
   }
 };
 
-    console.log("stat=======================================================\n"+JSON.stringify(this.state.data))
     return (
       <View style={{ flex: 1, alignItems: "stretch", justifyContent: "center" ,backgroundColor:"#212121"}}>
         <Header

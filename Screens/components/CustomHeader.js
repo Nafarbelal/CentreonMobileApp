@@ -9,8 +9,6 @@ export default class CustomHeader extends React.Component {
     _signOutAsync = async () => {
         //await AsyncStorage.clear();
         global.myvar='';
-        //const userToken = await AsyncStorage.getItem('userToken');
-        //console.log('token : '+userToken);
         this.props.navigation.navigate('Auth');
     };
 

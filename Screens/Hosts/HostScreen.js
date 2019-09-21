@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {TouchableOpacity,AsyncStorage, View,ActivityIndicator, Text,TouchableHighlight, Image,ScrollView } from "react-native";
+import {TouchableOpacity,AsyncStorage, View,ActivityIndicator, Text,TouchableHighlight,ScrollView } from "react-native";
 import {Icon} from "react-native-elements"
 import MyHeader from '../components/MyHeader'
 
@@ -41,7 +41,6 @@ class HostScreen extends Component {
             }
         }).then(res => res.json())
             .then(function (res) {
-              console.log(JSON.stringify(res))
                 that.setState({ data: res,loading:false});
             })
             .catch(error => console.error('Error:', error)); 
@@ -60,7 +59,6 @@ class HostScreen extends Component {
     }
   render() {
     const { navigate } = this.props.navigation;
-    console.log("stat=======================================================\n"+this.state.data)
     return (
       <View style={{ flex: 1, alignItems: "stretch", justifyContent: "center" ,backgroundColor:"#212121"}}>
         <MyHeader  navigation={this.props.navigation || ''} title="Host status" />
@@ -72,7 +70,7 @@ class HostScreen extends Component {
             :
                 Object.keys(this.state.data).map((key, i) => (
                 <TouchableOpacity onPress={() => navigate('HostDetail',{desc:this.state.data[key].name})}  key={key} style={{margin:5,borderRadius:10,backgroundColor:this.getColor(this.state.data[key].state),padding:10,flexDirection:"row",alignItems:'center'}}>
-                  <View onPress={()=>{console.log("it works")}} style={{width:300}}>
+                  <View style={{width:300}}>
                       <Text style={{fontWeight:"bold",fontSize:20}}>{ this.state.data[key].name }</Text>
                       <Text>{ this.getStatus(this.state.data[key].state) }</Text>
                       <Text>{ this.state.data[key].output }</Text>

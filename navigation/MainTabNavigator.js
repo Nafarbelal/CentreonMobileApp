@@ -1,7 +1,6 @@
 import React from 'react'
 import { DrawerItems,createDrawerNavigator} from "react-navigation";
 import {View,Image,Text} from 'react-native'
-import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //navigations
 import HostStackNavigator from './HostStackNavigator';
@@ -9,7 +8,6 @@ import HostStackNavigator from './HostStackNavigator';
 import ServiceSwitchNavigator from './ServiceSwitchNavigator'
 //screens
 import HomeScreen from "../Screens/HomeScreen";
-import SettingsScreen from "../Screens/SettingsScreen";
 
 const DrawerContent = (props) => (
   <View>

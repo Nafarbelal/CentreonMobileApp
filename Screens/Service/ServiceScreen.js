@@ -24,7 +24,6 @@ class ServiceScreen extends Component {
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.setState({_isMounted:true});
       host = this.props.navigation.getParam('HostName', '');
-      console.log("host is : "+host);    
       AsyncStorage.getItem('centreon_api').then((value)=>{
         if(that.state._isMounted)
           that.setState({centreon_api:value});
@@ -50,7 +49,6 @@ class ServiceScreen extends Component {
             }
         }).then(res => res.json())
             .then(function (res) {
-              console.log(JSON.stringify(res));
               if(that.state._isMounted)  
               that.setState({ data: res,loading:false });
             })
@@ -64,7 +62,6 @@ class ServiceScreen extends Component {
     }
     updateSearch = search => {
       this.setState({ search });
-      console.log("state :"+this.state.search);
   };
   handleQueryChange= query => {
     this.setState(state => ({ ...state, search: query || "" }));
@@ -73,8 +70,6 @@ class ServiceScreen extends Component {
   handleSearchClear = () => this.handleQueryChange(""); // maybe differentiate between cancel and clear
   render() {
     const { search } = this.state;
-       
-    //console.log("stat=======================================================\n"+JSON.stringify(this.state.data[0]))
     const { navigate } = this.props.navigation;
     return (
       <View style={{ flex: 1, alignItems: "stretch", justifyContent: "center" ,backgroundColor:"#212121"}}>
@@ -107,19 +102,6 @@ class ServiceScreen extends Component {
             style={{height:10}}
     />
         <ScrollView>
-        <SearchBar
-          placeholder="Service Name..."
-          onChangeText={this.updateSearch}
-          value={search}
-          round
-          cancelIcon
-          clearIcon={{size:30,paddingRight:5}}
-          inputContainerStyle={{paddingRight:20}}
-          rightIconContainerStyle={{width:50}}
-          value={this.state.search}
-          onChangeText={this.handleQueryChange}
-          onClear={this.handleSearchClear}
-        />
           { 
               
             this.state.loading===true?

@@ -8,13 +8,10 @@ import TitleHeader from "./TitleHeader";
 export default class MyHeader extends React.Component {
     constructor(props){
         super(props);
-        //console.log('log out');
     }
     _signOutAsync = async () => {
         //await AsyncStorage.clear();
         global.myvar='';
-        //const userToken = await AsyncStorage.getItem('userToken');
-        //console.log('token : '+userToken);
         this.props.navigation.navigate('Auth');
     };
 

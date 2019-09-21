@@ -26,7 +26,6 @@ class HostDetailScreen extends Component {
         that.setState({centreon_api:value});
         this.makeRemoteRequest(hostName);
       });
-      console.log("services screen mounted");
     })
   }
 
@@ -37,7 +36,6 @@ class HostDetailScreen extends Component {
 
   makeRemoteRequest = (hostName) => {
   that=this;
-  console.log(this.state.centreon_api);
   return fetch(this.state.centreon_api+'/centreon/api/index.php?object=centreon_realtime_hosts&action=list&search='+hostName, {
     method: 'GET',
             headers: {
@@ -46,24 +44,6 @@ class HostDetailScreen extends Component {
             }
         }).then(res => res.json())
             .then(function (res) {
-                /*res.forEach(function (r) {
-                    switch (r.state) {
-                        case '0':
-                            data[0]++;
-                            break;
-                        case '1':
-                            data[1]++;
-                            break;
-                        case '2':
-                            data[2]++;
-                            break;
-                        case '3':
-                            data[3]++;
-                            break;
-                    }
-                });*/
-                //console.log('from getdata :');
-                //console.log(this.data);
                 res[0].last_check=moment.unix(parseInt(res[0].last_check)).format('LLLL');
                 res[0].last_state_change=moment.unix(parseInt(res[0].last_state_change)).format('LLLL');
                 res[0].last_hard_state_change=moment.unix(parseInt(res[0].last_hard_state_change)).format('LLLL');
@@ -77,20 +57,19 @@ class HostDetailScreen extends Component {
   };
   getStatus= s =>{
     if(s==="0") return "UP";
-    if(s==="2") return "Down";
+    if(s==="1") return "Down";
     //if(s==="1" || s==="3") return "Unreachable";
     return "Unreachable";    
 }
 
   getColor = s =>{
     if(s==="0") return "#88b917";
+    if(s==="1" ) return "#990000";
     if(s==="2") return "#f4e640";
-    //if(s==="3" || s==="1") return "#e00b3d";
-      return "#e00b3d";
+      return "#4d4d4d";
     }
     
   render() {
-    console.log("stat=======================================================\n"+JSON.stringify(this.state.data))
     return (
       <View style={{ flex: 1, alignItems: "stretch", justifyContent: "center" ,backgroundColor:"#212121"}}>
         <Header

@@ -7,8 +7,8 @@ export default class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            login: 'bilal',
-            password: '0FguUFaF',
+            login: '',
+            password: '',
             centreon_api:'',
             dialogVisible:false,
         };
@@ -24,7 +24,6 @@ export default class Login extends React.Component {
     };
      
     handleEdit (){
-        console.log("edit fired");
         AsyncStorage.setItem('centreon_api', this.state.centreon_api).then(this.setState({ dialogVisible: false}));
         
     };
@@ -32,10 +31,8 @@ export default class Login extends React.Component {
         this.focusListener = this.props.navigation.addListener('didFocus', () => {
             that=this;
             AsyncStorage.getItem('centreon_api').then((value)=>{
-                console.log("centreon_api"+JSON.stringify(value));
                 if(value) that.setState({centreon_api:value});
                 else that.setState({dialogVisible:true});
-                console.log('initial state '+this.state.centreon_api); 
             });
         });
       }
@@ -51,8 +48,6 @@ export default class Login extends React.Component {
         formData.append('username', login);
         formData.append('password', pass);
         var that = this;
-        console.log("Begin auth process"+login+pass)  
-        console.log("res : "+this.state)  
         return fetch(this.state.centreon_api+'/centreon/api/index.php?action=authenticate', {
             method: 'POST',
             mode: 'cors',
@@ -69,10 +64,8 @@ export default class Login extends React.Component {
             throw new Error('Something went wrong');
         }).then(res =>{
                 var token = res.authToken;
-                console.log("token from server :"+token);
                 if (token) {
                     global.Token=token;
-                    console.log("stored Token "+global.Token);
                     that.props.navigation.navigate('App');
                 } else Alert.alert("Invalid credentials", "Incorrect Username or Password");
             }).catch(error => Alert.alert("Unable to connect", "we can't connect to the server. check your network connection and server address")) 
@@ -100,7 +93,7 @@ export default class Login extends React.Component {
                             value={this.state.login}
                             autoCapitalize="none"
                             underlineColorAndroid='transparent'
-                            onChangeText={(login) => this.setState({login:login})}
+                            onChangeText={(l) => this.setState({login:l})}
                             ref= {(el) => { this.login = el; }}
                             returnKeyType="next"
                             onSubmitEditing={() => this.passwordInput.focus()}
@@ -121,7 +114,7 @@ export default class Login extends React.Component {
                                autoCapitalize="none"
                                secureTextEntry={true}
                                underlineColorAndroid='transparent'
-                               onChangeText={(password) => this.setState({password:password})}
+                               onChangeText={(p) => this.setState({password:p})}
                                ref={(input) => this.passwordInput = input}
                                onSubmitEditing={this._signInAsync}
                     />
