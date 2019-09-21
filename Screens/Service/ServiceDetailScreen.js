@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet,TouchableHighlight,Text, Image,FlatList,ScrollView ,ActivityIndicator} from "react-native";
+import { View, StyleSheet,AsyncStorage,TouchableHighlight,Text, Image,FlatList,ScrollView ,ActivityIndicator} from "react-native";
 import Menu from "../components/Menu";
 import { Header,Icon,ListItem} from "react-native-elements";
 import { centreon_api_key } from 'react-native-dotenv'
@@ -22,13 +22,22 @@ class ServiceDetailScreen extends Component {
   }
 
   async componentDidMount() {
+    that=this;
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-      const { navigation } = this.props;
-      const serviceDesc = this.props.navigation.getParam('desc', 'undefined');  
-      console.log("heeeeeeeeeeeeeeeeeeeeeere is the props"+serviceDesc);
-      this.makeRemoteRequest(serviceDesc);
-        console.log("services screen mounted");
-    })
+    //=================
+    this.setState({_isMounted:true});
+    const serviceDesc = this.props.navigation.getParam('ServiceName', 'undefined');  
+    console.log("serives desc"+serviceDesc);
+    console.log("heeeeeeeeeeeeeeeeeeeeeere is the props"+serviceDesc);
+    AsyncStorage.getItem('centreon_api').then((value)=>{
+      if(that.state._isMounted)
+        that.setState({centreon_api:value});
+        console.log("centreon_api :"+that.state.centreon_api);
+       
+        this.makeRemoteRequest(serviceDesc);
+      });
+    //============
+      })
   }
 
   // and don't forget to remove the listener
@@ -62,7 +71,7 @@ class ServiceDetailScreen extends Component {
 
   makeRemoteRequest = serviceDesc => {
       that=this
-    return fetch('http://'+centreon_api_key+'/centreon/api/index.php?object=centreon_realtime_services&action=list&limit=500&search='+serviceDesc, {
+    return fetch(this.state.centreon_api+'/centreon/api/index.php?object=centreon_realtime_services&action=list&fields=last_check,last_hard_state_change,last_state_change,critically,perfdata,id,description,state,output,host_name&limit=500&search='+serviceDesc, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,12 +80,11 @@ class ServiceDetailScreen extends Component {
         }).then(res => res.json())
             .then(function (res) {
               i=0;
-              console.log("befooooore");
               console.log(res);
               res = res.filter(function(value, index, res){
                 console.log("vlue :"+value)
                 return value.description===serviceDesc;
-            });
+              });
                /* res.forEach(function (r) {
                     if(r.description!==serviceDesc) 
                 });*/
@@ -99,15 +107,15 @@ class ServiceDetailScreen extends Component {
   };
   getColor = s =>{
       if (s==="0") return "#88b917";
-      if (s==="1") return "#f4e640";
-      if (s==="2") return "#e00b3d";
+      if (s==="1") return "#e00b3d";
+      if (s==="2") return "#f4e640";
       return "#60bbd9";
     }
 
     getStat = s =>{
       if (s==="0") return "OK";
-      if(s==="1") return "WARNING";
-      if(s==="2") return "CRITICAL";
+      if(s==="2") return "WARNING";
+      if(s==="1") return "CRITICAL";
       return "UNKNOWN";
   }
     

@@ -1,7 +1,6 @@
 import React , { Component }from "react";
-import { View, Text,StyleSheet,TouchableHighlight ,Button,ActivityIndicator} from "react-native";
+import { AsyncStorage,View, Text,StyleSheet,TouchableHighlight ,Button,ActivityIndicator} from "react-native";
 import MyHeader from './components/MyHeader'
-import { centreon_api_key } from 'react-native-dotenv'
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -26,13 +25,20 @@ class HomeScreen extends Component {
         unknown:0
       },
       refreshing: false,
+      centreon_api:'',
     };
+    console.log("api is :"+this.state.centreon_api)
+    this.makeRemoteRequest=this.makeRemoteRequest.bind(this);
   }
 
   async componentDidMount() {
+   that=this;
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
-        this.makeRemoteRequest();
-        console.log("hosts screen mounted");
+    AsyncStorage.getItem('centreon_api').then((value)=>{
+      that.setState({centreon_api:value});
+      this.makeRemoteRequest();
+    });
+    console.log("hosts screen mounted");
     })
   }
 
@@ -41,10 +47,11 @@ class HomeScreen extends Component {
     this.focusListener.remove()
   }
 
-  makeRemoteRequest = () => {
+  makeRemoteRequest = function  (){
       that=this;  
-//fetch hosts 
-fetch('http://'+centreon_api_key+'/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all&order=desc&fields=id,host_id,state&limit=500', {
+//fetch hosts
+console.log("api :"+this.state.centreon_api); 
+fetch(this.state.centreon_api+'/centreon/api/index.php?action=list&object=centreon_realtime_hosts&viewType=all&order=desc&fields=id,host_id,state&limit=500', {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -85,7 +92,7 @@ fetch('http://'+centreon_api_key+'/centreon/api/index.php?action=list&object=cen
           })
           .catch(error => console.error('Error:', error)); 
   //fetch services
-  fetch('http://'+centreon_api_key+'/centreon/api/index.php?object=centreon_realtime_services&action=list&limit=500', {
+  fetch(this.state.centreon_api+'/centreon/api/index.php?object=centreon_realtime_services&action=list&limit=500', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

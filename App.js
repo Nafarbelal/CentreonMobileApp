@@ -1,11 +1,15 @@
 import { createSwitchNavigator,createStackNavigator,createAppContainer } from "react-navigation";
+import {AsyncStorage} from 'react-native'
 import AuthStackNavigator from './navigation/AuthStackNavigator';
 import TabNavigator from './navigation/MainTabNavigator';
 import AuthLoadingScreen from './Screens/AuthLoadingScreen';
-import moment from 'moment'
+import moment from 'moment';
+import {
+	Alert
+} from 'react-native';
+
 global.Token=''
 
-//gllobal.momentOption=
 moment.locale('fr', {
     months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
     monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),

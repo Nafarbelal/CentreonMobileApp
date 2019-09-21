@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-import { View,ActivityIndicator, Text,TouchableHighlight, Image,ScrollView ,StyleSheet,Picker} from "react-native";
+import { View,TouchableOpacity,ActivityIndicator, Text,TouchableHighlight, Image,ScrollView ,StyleSheet,Picker,AsyncStorage} from "react-native";
 import {Icon,Header} from "react-native-elements"
 import { centreon_api_key } from 'react-native-dotenv'
 import MyHeader from '../components/MyHeader'
@@ -15,13 +15,19 @@ class ServiceByHostScreen extends Component {
       loading:true,
       error: null,
       refreshing: false,
+      centreon_api:''
     };
   }
 
   async componentDidMount() {
+    that=this;
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      AsyncStorage.getItem('centreon_api').then((value)=>{
+        that.setState({centreon_api:value});
+
         this.makeRemoteRequest();
-        console.log("hosts screen mounted");
+      });
+      console.log("hosts screen mounted");
     })
   }
 
@@ -30,9 +36,10 @@ class ServiceByHostScreen extends Component {
     this.focusListener.remove()
   }
 
-  makeRemoteRequest = () => {
-      that=this
-    return fetch('http://'+centreon_api_key+'/centreon/api/index.php?object=centreon_realtime_hosts&action=list', {
+  makeRemoteRequest = function(){
+      that=this;
+      console.log("api :"+this.state.centreon_api);
+    return fetch(this.state.centreon_api+'/centreon/api/index.php?object=centreon_realtime_hosts&action=list&limit=500', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -40,25 +47,6 @@ class ServiceByHostScreen extends Component {
             }
         }).then(res => res.json())
             .then(function (res) {
-                
-                /*res.forEach(function (r) {
-                    switch (r.state) {
-                        case '0':
-                            data[0]++;
-                            break;
-                        case '1':
-                            data[1]++;
-                            break;
-                        case '2':
-                            data[2]++;
-                            break;
-                        case '3':
-                            data[3]++;
-                            break;
-                    }
-                });*/
-                //console.log('from getdata :');
-                //console.log(this.data);
                 that.setState({ data: res ,loading:false});
             })
             .catch(error => console.error('Error:', error)); 
@@ -66,7 +54,7 @@ class ServiceByHostScreen extends Component {
   getColor = s =>{
         if(s==="0") return "#88b917";
         if(s==="2") return "#f4e640";
-        //if(s==="3") return "#990000";
+        //if(s==="3") return "#990000"; 
         return "#990000";
     }
     getStatus= s =>{
@@ -118,16 +106,16 @@ class ServiceByHostScreen extends Component {
               </View>
               : 
                 Object.keys(this.state.data).map((key, i) => (
-                <View key={key} style={{margin:5,borderRadius:10,backgroundColor:this.getColor(this.state.data[key].state),padding:10,flexDirection:"row",alignItems:'center'}}>
+                <TouchableOpacity onPress={() => navigate('Service',{HostName:this.state.data[key].name})} key={key} style={{margin:5,borderRadius:10,backgroundColor:this.getColor(this.state.data[key].state),padding:10,flexDirection:"row",alignItems:'center'}}>
                   <View onPress={()=>{console.log("it works")}} style={{width:300}}>
                       <Text style={{fontWeight:"bold",fontSize:20}}>{ this.state.data[key].name }</Text>
                       <Text>{ this.getStatus(this.state.data[key].state) }</Text>
                       <Text>{ this.state.data[key].output }</Text>
                   </View>
-                  <TouchableHighlight style={{marginLeft:50}}  onPress={() => navigate('Service',{desc:this.state.data[key].name})}>
+                  <TouchableHighlight style={{marginLeft:50}}>
                     <Icon name="arrow-forward"/>
                   </TouchableHighlight>  
-                </View>
+                </TouchableOpacity>
                 ))
             }  
         </ScrollView>

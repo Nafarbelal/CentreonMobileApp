@@ -1,28 +1,32 @@
 import React, { Component } from "react";
-import { View,ActivityIndicator, StyleSheet,Text, Image,ScrollView } from "react-native";
+import {AsyncStorage, ActivityIndicator,View, StyleSheet,Text, Image,ScrollView } from "react-native";
 import Menu from "../components/Menu";
 import { Header,Icon} from "react-native-elements";
-import { centreon_api_key } from 'react-native-dotenv'
 import moment from 'moment';
 
 class HostDetailScreen extends Component {
   constructor(props) {
     super(props);
-
+    
     this.state = {
       data: [],
       error: null,
       color:'',
       loading:true,
       refreshing: false,
+      centreon_api:''
     };
   }
 
   async componentDidMount() {
+    that=this;
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       const hostName = this.props.navigation.getParam('desc', 'undefined');  
-      this.makeRemoteRequest(hostName);
-        console.log("services screen mounted");
+      AsyncStorage.getItem('centreon_api').then((value)=>{
+        that.setState({centreon_api:value});
+        this.makeRemoteRequest(hostName);
+      });
+      console.log("services screen mounted");
     })
   }
 
@@ -32,10 +36,9 @@ class HostDetailScreen extends Component {
   }
 
   makeRemoteRequest = (hostName) => {
-      that=this;
-//    return fetch('http://'+centreon_api_key+'/centreon/api/index.php?object=centreon_realtime_services&action=list&limit=500&searchHost='+hostName, {
-  //centreon/api/index.php?object=centreon_realtime_hosts&action=list&search=my
-  return fetch('http://'+centreon_api_key+'/centreon/api/index.php?object=centreon_realtime_hosts&action=list&search='+hostName, {
+  that=this;
+  console.log(this.state.centreon_api);
+  return fetch(this.state.centreon_api+'/centreon/api/index.php?object=centreon_realtime_hosts&action=list&search='+hostName, {
     method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
