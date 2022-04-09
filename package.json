@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "expo": "^33.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.26",
     "prismic-reactjs": "^1.0.0",
     "pushbots-react-native": "^1.1.5",
